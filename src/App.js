@@ -1,26 +1,43 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {Cards, Chart, Combobox} from './components';
+import styles from './App.module.css';
+import {fetchData} from './FetchData';
+import Header from './components/Header';
+class App extends React.Component{  
+    state = {
+           data:{},
+           country:'',
+    }
+   
+   
+   
+    async componentDidMount(){
+        const getdata = await fetchData();
+        console.log(getdata);
+        this.setState({data:getdata})
+    }
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    handleCountryChange = async (country) => {
+        const data = await fetchData(country);
+    
+        this.setState({ data, country: country });
+      }
+
+    render(){
+        const {data,country} = this.state;
+        return(
+        
+        <div>
+            <Header/>
+        <div className={styles.container}>
+            
+            <Cards data={data}/>
+            <Combobox handleCountryChange={this.handleCountryChange}/>
+            <Chart  data={data} country={country} />
+            <div><br/><br/><a href="https://github.com/TariqSays">Meet Developer</a></div>
+        </div>
+        </div>
+        )
+    }
 }
-
-export default App;
+export default App; 
